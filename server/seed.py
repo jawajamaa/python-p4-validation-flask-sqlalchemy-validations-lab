@@ -29,3 +29,5 @@ with app.app_context():
     db.session.add_all(posts)
 
     db.session.commit()
+
+    print("db seeded; now it's entirely up to you!!")
