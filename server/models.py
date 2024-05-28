@@ -45,35 +45,39 @@ class Post(db.Model):
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
 
-    @validates("title", "content", "category", "summary")
+    @validates("title")
     def validate_post(self, key, value):
-        clickbait = ["Won't Believe", "Secret", "Top", "Guess"]
+        if not value:
+            raise ValueError ("The title's name must not be blank.")
+        
+        clickbait_phrases = ["Won't Believe", "Secret", "Top", "Guess"]
+        if not any(substring in value for substring in clickbait_phrases):
+            raise ValueError ("No clickbait found!")
+        
+        return value
+            
+    @validates("content")
+    def validate_content(self, key, value):
+        if len(value) < 250:
+            raise ValueError ("The content must be 250 characters or longer.")
+        else:
+            return value
+            
+    @validates("category")
+    def validate_category(self, key, value):
+        accept_cat = ["Fiction", "Non-Fiction"]
+        if value not in accept_cat :
+            raise ValueError ("The category must be \'Fiction\' or \'Non-Fiction\'")
+        else:
+            return value
+            
+    @validates("summary")
+    def validate_summary(self, key, value):
         # breakpoint()
-        if key == "title":
-            if not value:
-                raise ValueError ("The title's name must not be blank.")
-            elif [word for word in clickbait if (word in value)]:
-                raise ValueError (f'Title must contain {", ".join(clickbait)}')
-            else:
-                return value
-            
-        elif key == "content":
-            if len(value) < 250:
-                raise ValueError ("The content must be 250 characters or longer.")
-            else:
-                return value
-            
-        elif key == "category":
-            if value != "Fiction" or value != "Non-Fiction":
-                raise ValueError ("The category must be \'Fiction\' or \'Non-Fiction\'")
-            else:
-                return value
-            
-        elif key == "summary":
-            if value > 250:
-                raise ValueError ("The summary must be a maximum of 250 characters.")
-            else:
-                return value
+        if len(value) > 250:
+            raise ValueError ("The summary must be a maximum of 250 characters.")
+        else:
+            return value
 
 
     def __repr__(self):

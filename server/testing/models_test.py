@@ -110,6 +110,13 @@ class TestPost:
                 post = Post(title='Top Ten Reasons I Love Programming.', content=content_string, category='Banana')
 
 
+    # def test_clickbait(self):
+    #     '''Test clickbait validator for title.'''
+    #     with app.app_context():
+    #         content_string = "A" * 260
+    #         with pytest.raises(ValueError):
+    #             post = Post(title='Top Ten Reasons I Love Programming.', content=content_string, category='Fiction')
+
     def test_clickbait(self):
         '''Test clickbait validator for title.'''
         with app.app_context():
